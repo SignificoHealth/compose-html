@@ -1,5 +1,6 @@
 package com.ireward.htmlcompose
 
+import android.text.Spanned
 import android.text.style.*
 import android.widget.TextView
 import androidx.compose.foundation.text.ClickableText
@@ -8,10 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextLayoutResult
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.*
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
@@ -35,9 +33,10 @@ fun HtmlText(
     URLSpanStyle: SpanStyle = SpanStyle(
         color = linkTextColor(),
         textDecoration = TextDecoration.Underline
-    )
+    ),
+    customSpannedHandler: ((Spanned) -> AnnotatedString)? = null
 ) {
-    val content = text.asHTML(fontSize, flags, URLSpanStyle)
+    val content = text.asHTML(fontSize, flags, URLSpanStyle, customSpannedHandler)
     if (linkClicked != null) {
         ClickableText(
             modifier = modifier,
@@ -77,12 +76,17 @@ private fun linkTextColor() = Color(
 private fun String.asHTML(
     fontSize: TextUnit,
     flags: Int,
-    URLSpanStyle: SpanStyle
+    URLSpanStyle: SpanStyle,
+    customSpannedHandler: ((Spanned) -> AnnotatedString)? = null
 ) = buildAnnotatedString {
     val spanned = HtmlCompat.fromHtml(this@asHTML, flags)
     val spans = spanned.getSpans(0, spanned.length, Any::class.java)
 
-    append(spanned.toString())
+    if (customSpannedHandler != null) {
+        append(customSpannedHandler(spanned))
+    } else {
+        append(spanned.toString())
+    }
 
     spans
         .filter { it !is BulletSpan }

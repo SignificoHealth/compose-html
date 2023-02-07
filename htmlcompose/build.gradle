@@ -3,7 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'maven-publish'
 }
-group = 'com.github.ireward'
+group = 'com.github.viluahealthcare'
 version = '1.0.0'
 
 android {
