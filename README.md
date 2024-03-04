@@ -19,7 +19,7 @@ Add to app module *gradle.build* file.
 
 ```gradle
 dependencies {
-    implementation 'com.github.viluahealthcare.compose-html:1.0.3'
+    implementation 'com.github.viluahealthcare:compose-html:1.0.3'
 }
 ```
 
